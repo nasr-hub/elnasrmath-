@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>QR Code - ألوان فاتحة جدا</title>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #fff;
+    }
+    #qrcode {
+      position: relative;
+      width: 1000px;
+      height: 1000px;
+    }
+    #logo {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 200px;
+      height: 200px;
+      transform: translate(-50%, -50%);
+      border-radius: 20px;
+    }
+    canvas {
+      border-radius: 40px;
+    }
+  </style>
+</head>
+<body>
+  <div id="qrcode">
+    <img id="logo" src="logo.png" alt="Logo">
+  </div>
+
+  <script>
+    var qrDiv = document.getElementById("qrcode");
+    var qrcode = new QRCode(qrDiv, {
+      text: "https://nasr-hub.github.io/elnasrmath/",
+      width: 1000,
+      height: 1000,
+      colorDark : "#000000",
+      colorLight : "#ffffff",
+      correctLevel : QRCode.CorrectLevel.H
+    });
+
+    // ألوان باستيل فاتحة جدًا بوضوح أقل (0.15)
+    const pastelColors = [
+      "rgba(255, 200, 200, 0.15)", // وردي باهت
+      "rgba(200, 220, 255, 0.15)", // أزرق باهت
+      "rgba(220, 200, 255, 0.15)", // بنفسجي باهت
+      "rgba(200, 255, 200, 0.15)", // أخضر باهت
+      "rgba(255, 245, 200, 0.15)", // أصفر باهت
+      "rgba(255, 220, 180, 0.15)"  // مشمشي فاتح
+    ];
+
+    function randomColor() {
+      return pastelColors[Math.floor(Math.random() * pastelColors.length)];
+    }
+
+    setTimeout(() => {
+      let canvas = qrDiv.querySelector("canvas");
+      let ctx = canvas.getContext("2d");
+      let imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+      // 3 ألوان فاتحة جدًا عشوائية
+      let c1 = randomColor();
+      let c2 = randomColor();
+      let c3 = randomColor();
+
+      let gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+      gradient.addColorStop(0, c1);
+      gradient.addColorStop(0.5, c2);
+      gradient.addColorStop(1, c3);
+
+      let tempCanvas = document.createElement("canvas");
+      tempCanvas.width = canvas.width;
+      tempCanvas.height = canvas.height;
+      let tempCtx = tempCanvas.getContext("2d");
+      tempCtx.putImageData(imgData, 0, 0);
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.globalCompositeOperation = "destination-in";
+      ctx.drawImage(tempCanvas, 0, 0);
+      ctx.globalCompositeOperation = "source-over";
+    }, 300);
+  </script>
+</body>
+</html>
